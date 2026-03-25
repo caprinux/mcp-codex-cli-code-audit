@@ -15,55 +15,74 @@ audit_code → Codex finds bugs → You fix bugs → audit_iterate → Codex ver
 3. **`audit_iterate`** — Re-audit. Codex verifies previous fixes, checks for regressions, and digs deeper for additional bugs. Multi-turn context means Codex remembers what it found before.
 4. **Repeat** until Codex reports the code is clean.
 
-## Prerequisites
+## Quick Start
 
-- [Codex CLI](https://github.com/openai/codex) installed and on `$PATH` (`npm install -g @openai/codex`)
-- `OPENAI_API_KEY` or `CODEX_API_KEY` set in your environment
-- Python 3.10+
+### 1. Install prerequisites
 
-## Installation
+```bash
+# Codex CLI
+npm install -g @openai/codex
+
+# Set your OpenAI API key
+export OPENAI_API_KEY="sk-..."
+```
+
+### 2. Install the MCP server
 
 ```bash
 pip install git+https://github.com/caprinux/mcp-codex-cli-code-audit.git
 ```
 
-Or clone and install locally:
+### 3. Register with Claude Code
 
 ```bash
-git clone https://github.com/caprinux/mcp-codex-cli-code-audit.git
-cd mcp-codex-cli-code-audit
-pip install -e .
+claude mcp add codex-bug-audit -- codex-bug-audit-mcp
 ```
 
-## Claude Code Configuration
+### 4. Install the slash commands
 
-Add to your Claude Code MCP settings (`~/.claude/settings.json` or project `.claude/settings.json`):
+From within your target project:
 
-```json
-{
-  "mcpServers": {
-    "codex-bug-audit": {
-      "command": "codex-bug-audit-mcp",
-      "args": []
-    }
-  }
-}
+```bash
+# Create the commands directory if it doesn't exist
+mkdir -p .claude/commands
+
+# Download the slash commands
+curl -sL https://raw.githubusercontent.com/caprinux/mcp-codex-cli-code-audit/main/.claude/commands/run.md \
+  -o .claude/commands/codex-audit-run.md
+curl -sL https://raw.githubusercontent.com/caprinux/mcp-codex-cli-code-audit/main/.claude/commands/report.md \
+  -o .claude/commands/codex-audit-report.md
 ```
 
-Or if running from source:
+### 5. Run it
 
-```json
-{
-  "mcpServers": {
-    "codex-bug-audit": {
-      "command": "python3",
-      "args": ["-m", "codex_bug_audit_mcp.server"]
-    }
-  }
-}
+```bash
+claude
+
+# Inside Claude Code:
+> /project:codex-audit-run
 ```
 
-## Tools
+That's it. Claude will ask Codex to audit your code, fix the bugs, re-audit, and iterate until clean.
+
+## Slash Commands
+
+### `/project:codex-audit-run [target_dir]`
+
+**Fully automated audit-fix-iterate loop.** Claude will:
+1. Ask Codex to audit the code
+2. Fix all real bugs found
+3. Re-audit (same session -- Codex remembers previous findings)
+4. Fix new/remaining bugs
+5. Repeat until clean (max 5 rounds)
+
+### `/project:codex-audit-report [target_dir]`
+
+**Read-only audit report.** Codex audits the code and Claude cross-references each finding, but nothing is modified. Outputs a clean report grouped by severity.
+
+## MCP Tools (Advanced)
+
+If you prefer manual control over the audit loop, the MCP server exposes three tools directly:
 
 ### `audit_code`
 
@@ -75,8 +94,6 @@ Start a new source code audit.
 | `focus_areas` | string | no | Comma-separated areas to focus on (e.g. "auth, SQL, input validation") |
 | `file_patterns` | string | no | File glob patterns to focus on (e.g. "src/**/*.ts") |
 | `model` | string | no | OpenAI model for Codex (default: "o3") |
-
-Returns a session ID and structured bug report.
 
 ### `audit_iterate`
 
@@ -94,48 +111,6 @@ Get session history and findings.
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | `session_id` | string | no | Session ID for details. Omit to list all sessions |
-
-## Slash Commands (Automated Workflows)
-
-This project includes Claude Code slash commands in `.claude/commands/` that automate the full audit loop. To use them, copy the `.claude/` directory into your target project, or symlink it.
-
-### `/project:codex-audit:run [target_dir]`
-
-**Fully automated audit-fix-iterate loop.** Claude will:
-1. Ask Codex to audit the code
-2. Fix all real bugs found
-3. Re-audit (same session — Codex remembers previous findings)
-4. Fix new/remaining bugs
-5. Repeat until clean (max 5 rounds)
-
-```
-You: /project:codex-audit:run ./src
-Claude: [autonomously audits, fixes, re-audits, fixes... until clean]
-```
-
-### `/project:codex-audit:report [target_dir]`
-
-**Read-only audit report.** Codex audits the code and Claude cross-references each finding, but nothing is modified. Outputs a clean report grouped by severity.
-
-```
-You: /project:codex-audit:report
-Claude: [produces severity-grouped bug report with confirmed vs false positive classifications]
-```
-
-### Setup for Slash Commands
-
-Copy the commands into your project:
-
-```bash
-# From within your target project:
-cp -r /path/to/mcp-codex-cli-code-audit/.claude .
-```
-
-Or symlink for automatic updates:
-
-```bash
-ln -s /path/to/mcp-codex-cli-code-audit/.claude/commands .claude/commands
-```
 
 ## Example Manual Workflow
 
