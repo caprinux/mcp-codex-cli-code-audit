@@ -95,7 +95,49 @@ Get session history and findings.
 |---|---|---|---|
 | `session_id` | string | no | Session ID for details. Omit to list all sessions |
 
-## Example Workflow
+## Slash Commands (Automated Workflows)
+
+This project includes Claude Code slash commands in `.claude/commands/` that automate the full audit loop. To use them, copy the `.claude/` directory into your target project, or symlink it.
+
+### `/project:codex-audit:run [target_dir]`
+
+**Fully automated audit-fix-iterate loop.** Claude will:
+1. Ask Codex to audit the code
+2. Fix all real bugs found
+3. Re-audit (same session — Codex remembers previous findings)
+4. Fix new/remaining bugs
+5. Repeat until clean (max 5 rounds)
+
+```
+You: /project:codex-audit:run ./src
+Claude: [autonomously audits, fixes, re-audits, fixes... until clean]
+```
+
+### `/project:codex-audit:report [target_dir]`
+
+**Read-only audit report.** Codex audits the code and Claude cross-references each finding, but nothing is modified. Outputs a clean report grouped by severity.
+
+```
+You: /project:codex-audit:report
+Claude: [produces severity-grouped bug report with confirmed vs false positive classifications]
+```
+
+### Setup for Slash Commands
+
+Copy the commands into your project:
+
+```bash
+# From within your target project:
+cp -r /path/to/mcp-codex-cli-code-audit/.claude .
+```
+
+Or symlink for automatic updates:
+
+```bash
+ln -s /path/to/mcp-codex-cli-code-audit/.claude/commands .claude/commands
+```
+
+## Example Manual Workflow
 
 ```
 You: Use audit_code to audit /path/to/my/project focusing on authentication
