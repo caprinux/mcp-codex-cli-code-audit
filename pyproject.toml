@@ -12,5 +12,8 @@ dependencies = [
     "codex-agent-sdk @ git+https://github.com/caprinux/codex-agent-sdk-python.git",
 ]
 
+[tool.setuptools.package-data]
+codex_bug_audit_mcp = ["commands/*.md"]
+
 [project.scripts]
 codex-bug-audit-mcp = "codex_bug_audit_mcp.server:main"

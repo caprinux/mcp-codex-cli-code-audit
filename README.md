@@ -41,18 +41,11 @@ claude mcp add codex-bug-audit -- codex-bug-audit-mcp
 
 ### 4. Install the slash commands
 
-From within your target project:
-
 ```bash
-# Create the commands directory if it doesn't exist
-mkdir -p .claude/commands
-
-# Download the slash commands
-curl -sL https://raw.githubusercontent.com/caprinux/mcp-codex-cli-code-audit/main/.claude/commands/run.md \
-  -o .claude/commands/codex-audit-run.md
-curl -sL https://raw.githubusercontent.com/caprinux/mcp-codex-cli-code-audit/main/.claude/commands/report.md \
-  -o .claude/commands/codex-audit-report.md
+codex-bug-audit-mcp --install-commands
 ```
+
+This copies the commands to `~/.claude/commands/` so they're available in every project.
 
 ### 5. Run it
 
@@ -60,14 +53,14 @@ curl -sL https://raw.githubusercontent.com/caprinux/mcp-codex-cli-code-audit/mai
 claude
 
 # Inside Claude Code:
-> /project:codex-audit-run
+> /user:codex-audit-run
 ```
 
 That's it. Claude will ask Codex to audit your code, fix the bugs, re-audit, and iterate until clean.
 
 ## Slash Commands
 
-### `/project:codex-audit-run [target_dir]`
+### `/user:codex-audit-run [target_dir]`
 
 **Fully automated audit-fix-iterate loop.** Claude will:
 1. Ask Codex to audit the code
@@ -76,7 +69,7 @@ That's it. Claude will ask Codex to audit your code, fix the bugs, re-audit, and
 4. Fix new/remaining bugs
 5. Repeat until clean (max 5 rounds)
 
-### `/project:codex-audit-report [target_dir]`
+### `/user:codex-audit-report [target_dir]`
 
 **Read-only audit report.** Codex audits the code and Claude cross-references each finding, but nothing is modified. Outputs a clean report grouped by severity.
 

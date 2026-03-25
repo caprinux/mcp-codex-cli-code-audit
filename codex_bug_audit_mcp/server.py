@@ -459,10 +459,47 @@ async def audit_status(session_id: str = "") -> str:
     return "\n".join(lines)
 
 
+# ── Command Installer ───────────────────────────────────────────────────────
+
+def install_commands() -> None:
+    """Copy slash command files to ~/.claude/commands/."""
+    target = os.path.expanduser("~/.claude/commands")
+    os.makedirs(target, exist_ok=True)
+
+    # Commands are bundled as package data
+    src_dir = os.path.join(os.path.dirname(__file__), "commands")
+
+    copied = []
+    for fname in os.listdir(src_dir):
+        if not fname.endswith(".md"):
+            continue
+        src = os.path.join(src_dir, fname)
+        dst = os.path.join(target, fname)
+        with open(src) as f:
+            content = f.read()
+        with open(dst, "w") as f:
+            f.write(content)
+        copied.append(fname)
+
+    if copied:
+        print(f"Installed {len(copied)} command(s) to {target}:")
+        for f in copied:
+            name = f.removesuffix(".md")
+            print(f"  /user:{name}")
+    else:
+        print("No command files found to install.")
+
+
 # ── Entrypoint ──────────────────────────────────────────────────────────────
 
 
 def main():
+    import sys
+
+    if "--install-commands" in sys.argv:
+        install_commands()
+        return
+
     mcp.run(transport="stdio")
 
 
