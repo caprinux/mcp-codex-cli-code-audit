@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "codex-bug-audit-mcp"
+version = "1.0.0"
+description = "MCP server that uses OpenAI Codex CLI for iterative source code bug auditing"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=1.0.0",
+    "codex-agent-sdk @ git+https://github.com/caprinux/codex-agent-sdk-python.git",
+]
+
+[project.scripts]
+codex-bug-audit-mcp = "codex_bug_audit_mcp.server:main"
