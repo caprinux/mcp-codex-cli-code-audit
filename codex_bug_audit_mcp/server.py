@@ -213,7 +213,7 @@ async def audit_code(
     target_dir: str,
     focus_areas: str = "",
     file_patterns: str = "",
-    model: str = "o3",
+    model: str = "gpt-5.4",
 ) -> str:
     """Start a new source code audit using OpenAI Codex CLI.
 
@@ -227,7 +227,7 @@ async def audit_code(
         target_dir: Absolute path to the directory to audit.
         focus_areas: Optional comma-separated areas to focus on (e.g. "auth, SQL, input validation").
         file_patterns: Optional file patterns to focus on (e.g. "src/**/*.ts").
-        model: OpenAI model for Codex. Defaults to "o3".
+        model: OpenAI model for Codex. Defaults to "gpt-5.4".
     """
     # Validate
     resolved = os.path.abspath(target_dir)

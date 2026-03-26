@@ -86,7 +86,7 @@ Start a new source code audit.
 | `target_dir` | string | yes | Absolute path to the directory to audit |
 | `focus_areas` | string | no | Comma-separated areas to focus on (e.g. "auth, SQL, input validation") |
 | `file_patterns` | string | no | File glob patterns to focus on (e.g. "src/**/*.ts") |
-| `model` | string | no | OpenAI model for Codex (default: "o3") |
+| `model` | string | no | OpenAI model for Codex (default: "gpt-5.4") |
 
 ### `audit_iterate`
 
