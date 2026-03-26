@@ -36,7 +36,7 @@ pip install git+https://github.com/caprinux/mcp-codex-cli-code-audit.git
 ### 3. Register with Claude Code
 
 ```bash
-claude mcp add codex-bug-audit -- codex-bug-audit-mcp
+claude mcp add codex-bug-audit -s user -- codex-bug-audit-mcp
 ```
 
 ### 4. Install the slash commands
