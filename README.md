@@ -136,6 +136,17 @@ You: Re-audit again
 Claude: [calls audit_iterate] → "NO BUGS FOUND — all issues resolved"
 ```
 
+## Upgrading
+
+```bash
+pip install --force-reinstall git+https://github.com/caprinux/mcp-codex-cli-code-audit.git
+codex-bug-audit-mcp --install-commands
+```
+
+Then restart Claude Code to pick up the new version.
+
+The `--install-commands` step is only needed if the slash commands changed in the new version, but it's safe to always run it.
+
 ## License
 
 MIT
