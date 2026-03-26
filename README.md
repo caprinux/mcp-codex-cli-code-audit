@@ -69,6 +69,10 @@ That's it. Claude will ask Codex to audit your code, fix the bugs, re-audit, and
 4. Fix new/remaining bugs
 5. Repeat until clean (max 5 rounds)
 
+### `/user:codex-audit-review-recent`
+
+**Targeted audit of recent changes only.** If in a git repo, uses `git diff` to identify what changed. Otherwise, uses conversation context to recall what was recently implemented. Passes a summary of the changes to Codex so it audits only the relevant code — saves tokens and focuses findings.
+
 ### `/user:codex-audit-report [target_dir]`
 
 **Read-only audit report.** Codex audits the code and Claude cross-references each finding, but nothing is modified. Outputs a clean report grouped by severity.
